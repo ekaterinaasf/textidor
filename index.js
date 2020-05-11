@@ -54,15 +54,16 @@ app.get("/files", (req, res, next) => {
 // read a file
 app.get("/files/:name", (req, res, next) => {
   const fileName = req.params.name;
+  const receivedText = req.body.text;
   fs.readFile(`${FILES_DIR}/${fileName}`, "utf-8", (err, fileText) => {
     if (err) {
       res.status(404).end();
       return;
     }
-    if (fileText) {
+    if (fileText === receivedText) {
       //if no changes
-      _;
-      res.status(304); //res.status(200); maybe??
+      //next(); //???
+      res.status(304); //not modified
     }
     const responseData = {
       name: fileName,
@@ -75,13 +76,13 @@ app.get("/files/:name", (req, res, next) => {
 // write a file
 app.post("/files/:name", (req, res, next) => {
   const fileName = req.params.name;
-  const fileText = req.params.text; //not sure req.body.text
+  const fileText = req.body.text; //not sure req.body.text
   fs.writeFile(`${FILES_DIR}/${fileName}`, fileText, (err) => {
     if (err) {
       next(err);
       return;
     }
-    console.alert("your changes are saved"); //added myself
+    //alert("your changes are saved"); //added myself
     // https://stackoverflow.com/questions/33214717/why-post-redirects-to-get-and-put-redirects-to-put
     res.redirect(303, "/files");
   });
@@ -95,11 +96,11 @@ app.delete("/files/:name", (req, res, next) => {
       next(err);
       return;
     }
-    if (_) {
+    /*if (_) {
       _;
       _;
-    }
-    console.alert("file is deleted"); //added myself
+    }*/
+    //alert("file is deleted"); //added myself
     res.redirect(303, "/files");
   });
 });
